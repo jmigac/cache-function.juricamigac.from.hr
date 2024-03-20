@@ -55,7 +55,3 @@ def projects():
     else:
         projects = cache.projects
     return Response(json.dumps(projects, indent=4), mimetype="application/json")
-
-
-if __name__ == '__main__':
-    app.run()
