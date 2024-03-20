@@ -3,6 +3,7 @@ import os
 import requests
 from datetime import datetime
 from flask import Flask, Response
+from flask_cors import CORS
 from api.models.Cache import Cache
 
 environment = os.environ['ENVIRONMENT']
@@ -10,6 +11,7 @@ space_id = os.environ['SPACE_ID']
 token = os.environ['APP_TOKEN']
 cache_duration = os.environ['CACHE_DURATION']
 app = Flask(__name__)
+CORS(app)
 cache = Cache(cache_duration)
 
 @app.route('/experiences')
@@ -32,7 +34,7 @@ def experiences():
         cache.experiences = response_collection_items
     else:
         experience_articles = cache.experiences
-    return Response(json.dumps(experience_articles, indent=4), mimetype="text/plain")
+    return Response(json.dumps(experience_articles, indent=4), headers={"Access-Control-Allow-Origin": "*"})
 
 @app.route('/projects')
 def projects():
@@ -54,4 +56,6 @@ def projects():
         cache.projects = response_collection_items
     else:
         projects = cache.projects
-    return Response(json.dumps(projects, indent=4), mimetype="text/plain")
+    response.headers.add('Access-Control-Allow-Origin', '*')
+
+    return Response(json.dumps(projects, indent=4), mimetype="text/plain", headers={"Access-Control-Allow-Origin": "*"})
