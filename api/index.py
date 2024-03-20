@@ -32,7 +32,7 @@ def experiences():
         cache.experiences = response_collection_items
     else:
         experience_articles = cache.experiences
-    return Response(json.dumps(experience_articles, indent=4), mimetype="application/json")
+    return Response(json.dumps(experience_articles, indent=4), mimetype="text/plain")
 
 @app.route('/projects')
 def projects():
@@ -54,4 +54,4 @@ def projects():
         cache.projects = response_collection_items
     else:
         projects = cache.projects
-    return Response(json.dumps(projects, indent=4), mimetype="application/json")
+    return Response(json.dumps(projects, indent=4), mimetype="text/plain")
