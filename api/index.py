@@ -1,8 +1,7 @@
 import json
 import os
-import requests
 from datetime import datetime
-from flask import Flask, Response
+from flask import Flask, Response, request
 from api.models.Cache import Cache
 from api.models.contentful_request import ContentfulRequest
 
@@ -42,7 +41,7 @@ def projects():
 @app.route("/invalidate")
 def invalidate():
     message = ""
-    user_invalidation_token = requests.args.get('token')
+    user_invalidation_token = request.args.get('token')
     if user_invalidation_token == invalidation_token:
         cache.projects = []
         cache.experiences = []
