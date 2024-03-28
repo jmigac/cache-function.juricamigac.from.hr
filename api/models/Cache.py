@@ -10,4 +10,4 @@ class Cache:
     def is_cache_expired(self):
         current_time = datetime.now()
         difference = current_time - self.cache_time
-        return difference.seconds > int(self.cache_duration)
+        return (difference.seconds > int(self.cache_duration)) or (not self.experiences and not self.projects)
