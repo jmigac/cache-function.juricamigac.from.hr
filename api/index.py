@@ -11,47 +11,28 @@ token = os.environ['APP_TOKEN']
 cache_duration = os.environ['CACHE_DURATION']
 app = Flask(__name__)
 cache = Cache(cache_duration)
+contentful = ContentfulRequest(space_id, environment, token)
 
 @app.route('/experiences')
 def experiences():
     experience_articles = ""
     if cache.is_cache_expired() or not cache.experiences:
-        url = f"https://graphql.contentful.com/content/v1/spaces/{space_id}/environments/{environment}"
-        payload = "{\"query\":\"{\\r\\n  experienceArticleCollection(limit: 8) {\\r\\n    items {\\r\\n      title\\r\\n      description\\r\\n      from\\r\\n      until\\r\\n    }\\r\\n  }\\r\\n}\",\"variables\":{}}"
-        headers = {
-          'Content-Type': 'application/json',
-          'Authorization': f"Bearer {token}"
-        }
-        response = requests.request("POST", url, headers=headers, data=payload)
-        response_data = response.json()
-        response_field = response_data['data']
-        response_collection = response_field['experienceArticleCollection']
-        response_collection_items = response_collection['items']
-        experience_articles = response_collection_items
+        response = contentful.get_experiences()
+        experience_articles = response
         cache.cache_time = datetime.now()
-        cache.experiences = response_collection_items
+        cache.experiences = response
     else:
         experience_articles = cache.experiences
     return Response(json.dumps(experience_articles, indent=4), headers={'Access-Control-Allow-Origin': '*'}, mimetype="application/json")
 
 @app.route('/projects')
 def projects():
-    projects = ""
+    projects_result = ""
     if cache.is_cache_expired() or not cache.projects:
-        url = f"https://graphql.contentful.com/content/v1/spaces/{space_id}/environments/{environment}"
-        payload = "{\"query\":\"{\\r\\n  projectArticleCollection(limit: 8) {\\r\\n    items {\\r\\n      title\\r\\n      description\\r\\n      technologies\\r\\n    }\\r\\n  }\\r\\n}\",\"variables\":{}}"
-        headers = {
-          'Content-Type': 'application/json',
-          'Authorization': f"Bearer {token}"
-        }
-        response = requests.request("POST", url, headers=headers, data=payload)
-        response_data = response.json()
-        response_field = response_data['data']
-        response_collection = response_field['projectArticleCollection']
-        response_collection_items = response_collection['items']
-        projects = response_collection_items
+        response = ContentfulRequest.get_projects()
+        projects_result = response
         cache.cache_time = datetime.now()
-        cache.projects = response_collection_items
+        cache.projects = response
     else:
-        projects = cache.projects
-    return Response(json.dumps(projects, indent=4), headers={'Access-Control-Allow-Origin': '*'}, mimetype="application/json")
+        projects_result = cache.projects
+    return Response(json.dumps(projects_result, indent=4), headers={'Access-Control-Allow-Origin': '*'}, mimetype="application/json")
