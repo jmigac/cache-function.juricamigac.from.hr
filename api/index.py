@@ -41,7 +41,12 @@ def projects():
 
 @app.route("/invalidate")
 def invalidate():
+    message = ""
     user_invalidation_token = request.args.get('token')
     if user_invalidation_token == invalidation_token:
         cache.projects = []
         cache.experiences = []
+        message = "Content is successfully invalidated"
+    else:
+        message = "Missing token header, content isn't invalidated"
+    return Response(message, headers={'Access-Control-Allow-Origin': '*'}, mimetype="application/json")
