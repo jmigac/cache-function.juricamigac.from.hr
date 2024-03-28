@@ -42,7 +42,7 @@ def projects():
 @app.route("/invalidate")
 def invalidate():
     message = ""
-    user_invalidation_token = request.args.get('token')
+    user_invalidation_token = requests.args.get('token')
     if user_invalidation_token == invalidation_token:
         cache.projects = []
         cache.experiences = []
