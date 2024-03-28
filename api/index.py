@@ -4,6 +4,7 @@ import requests
 from datetime import datetime
 from flask import Flask, Response
 from api.models.Cache import Cache
+from api.models.contentful_request import ContentfulRequest
 
 environment = os.environ['ENVIRONMENT']
 space_id = os.environ['SPACE_ID']
