@@ -1,10 +1,9 @@
 import json
 import os
-import requests
 from datetime import datetime
 from flask import Flask, Response
-from api.models.Cache import Cache
-from api.models.contentful_request import ContentfulRequest
+from models.Cache import Cache
+from models.contentful_request import ContentfulRequest
 
 environment = os.environ['ENVIRONMENT']
 space_id = os.environ['SPACE_ID']
@@ -30,7 +29,7 @@ def experiences():
 def projects():
     projects_result = ""
     if cache.is_cache_expired() or not cache.projects:
-        response = ContentfulRequest.get_projects()
+        response = contentful.get_projects()
         projects_result = response
         cache.cache_time = datetime.now()
         cache.projects = response
