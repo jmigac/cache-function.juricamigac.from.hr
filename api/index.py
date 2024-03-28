@@ -1,7 +1,7 @@
 import json
 import os
 from datetime import datetime
-from flask import Flask, Response
+from flask import Flask, Response, request
 from api.models.Cache import Cache
 from api.models.contentful_request import ContentfulRequest
 
@@ -9,6 +9,7 @@ environment = os.environ['ENVIRONMENT']
 space_id = os.environ['SPACE_ID']
 token = os.environ['APP_TOKEN']
 cache_duration = os.environ['CACHE_DURATION']
+invalidation_token = os.environ["INVALIDATION_TOKEN"]
 app = Flask(__name__)
 cache = Cache(cache_duration)
 contentful = ContentfulRequest(space_id, environment, token)
@@ -36,3 +37,15 @@ def projects():
     else:
         projects_result = cache.projects
     return Response(json.dumps(projects_result, indent=4), headers={'Access-Control-Allow-Origin': '*'}, mimetype="application/json")
+
+@app.route("/invalidate")
+def invalidate():
+    message = ""
+    user_invalidation_token = request.args.get('token')
+    if user_invalidation_token == invalidation_token:
+        cache.projects = []
+        cache.experiences = []
+        message = "Content is successfully invalidated"
+    else:
+        message = "Missing token header, content isn't invalidated"
+    return Response(message, headers={'Access-Control-Allow-Origin': '*'}, mimetype="application/json")
