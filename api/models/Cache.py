@@ -3,7 +3,7 @@ class Cache:
 
     def __init__(self, cache_duration):
         self.cache_time = datetime.now()
-        self.experiences = ""
+        self.experiences = []
         self.projects = []
         self.cache_duration = cache_duration
 
