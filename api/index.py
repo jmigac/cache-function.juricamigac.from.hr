@@ -2,8 +2,8 @@ import json
 import os
 from datetime import datetime
 from flask import Flask, Response
-from models.Cache import Cache
-from models.contentful_request import ContentfulRequest
+from api.models.Cache import Cache
+from api.models.contentful_request import ContentfulRequest
 
 environment = os.environ['ENVIRONMENT']
 space_id = os.environ['SPACE_ID']

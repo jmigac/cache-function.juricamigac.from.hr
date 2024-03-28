@@ -1,5 +1,5 @@
 import requests
-from models.graphql_payloads import Payload
+from api.models.graphql_payloads import Payload
 class ContentfulRequest:
 
     def __init__(self, space_id, environment, token):
