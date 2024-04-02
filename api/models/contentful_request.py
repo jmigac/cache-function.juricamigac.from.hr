@@ -17,20 +17,21 @@ class ContentfulRequest:
     def get_projects(self):
         headers = self.get_headers()
         response = requests.request(HTTP_POST, self.base_url, headers=headers, data=self.payloads.PROJECTS_PAYLOAD)
-        return self.get_response_content(response=response,
-                                         field_name=PROJECT_COLLECTION)
+        return ContentfulRequest.get_response_content(response=response,
+                                                      field_name=PROJECT_COLLECTION)
 
     def get_experiences(self):
         headers = self.get_headers()
         response = requests.request(HTTP_POST, self.base_url, headers=headers, data=self.payloads.EXPERIENCES_PAYLOAD)
-        return self.get_response_content(response=response,
-                                         field_name=EXPERIENCE_COLLECTION)
-
-    def get_response_content(self, response, field_name):
-        return response.json()[GRAPHQL_DATA][field_name][GRAPHQL_ITEMS]
+        return ContentfulRequest.get_response_content(response=response,
+                                                      field_name=EXPERIENCE_COLLECTION)
 
     def get_headers(self):
         return {
             'Content-Type': APPLICATION_JSON,
             'Authorization': f"{BEARER} {self.token}"
         }
+
+    @staticmethod
+    def get_response_content(response, field_name):
+        return response.json()[GRAPHQL_DATA][field_name][GRAPHQL_ITEMS]
