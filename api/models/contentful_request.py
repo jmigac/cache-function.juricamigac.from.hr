@@ -2,6 +2,15 @@ import requests
 from api.models.graphql_payloads import Payload
 class ContentfulRequest:
 
+    response_fields = {
+        ARTICLE_COLLECTION: "projectArticleCollection",
+        EXPERIENCE_COLLECTION: "experienceArticleCollection",
+        GRAPHQL: {
+            DATA: "data",
+            ITEMS: "items"
+        }
+    }
+
     def __init__(self, space_id, environment, token):
         self.space_id = space_id
         self.environment = environment
@@ -12,18 +21,17 @@ class ContentfulRequest:
     def get_projects(self):
         headers = self.get_headers()
         response = requests.request("POST", self.base_url, headers=headers, data=self.payloads.PROJECTS_PAYLOAD)
-        response_data = response.json()
-        response_field = response_data['data']
-        response_collection = response_field['projectArticleCollection']
-        return response_collection['items']
+        return self.get_response_content(response=response,
+                                         field_name=response_fields.ARTICLE_COLLECTION)
 
     def get_experiences(self):
         headers = self.get_headers()
         response = requests.request("POST", self.base_url, headers=headers, data=self.payloads.EXPERIENCES_PAYLOAD)
-        response_data = response.json()
-        response_field = response_data['data']
-        response_collection = response_field['experienceArticleCollection']
-        return response_collection['items']
+        return self.get_response_content(response=response,
+                                         field_name=response_fields.EXPERIENCE_COLLECTION)
+
+    def get_response_content(self, response, field_name):
+        return response.json()[response_fields.GRAPHQL.DATA][field_name][response_fields.GRAPHQL.ITEMS]
 
     def get_headers(self):
         return {
