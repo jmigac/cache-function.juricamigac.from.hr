@@ -1,4 +1,6 @@
 from datetime import datetime
+
+
 class Cache:
 
     def __init__(self, cache_duration):

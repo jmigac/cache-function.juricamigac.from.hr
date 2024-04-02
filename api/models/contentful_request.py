@@ -1,5 +1,10 @@
 import requests
 from api.models.graphql_payloads import Payload
+from api.constants.constants import (PROJECT_COLLECTION, EXPERIENCE_COLLECTION,
+                                     GRAPHQL_DATA, GRAPHQL_ITEMS, APPLICATION_JSON,
+                                     BEARER, HTTP_POST)
+
+
 class ContentfulRequest:
 
     def __init__(self, space_id, environment, token):
@@ -11,22 +16,22 @@ class ContentfulRequest:
 
     def get_projects(self):
         headers = self.get_headers()
-        response = requests.request("POST", self.base_url, headers=headers, data=self.payloads.PROJECTS_PAYLOAD)
-        response_data = response.json()
-        response_field = response_data['data']
-        response_collection = response_field['projectArticleCollection']
-        return response_collection['items']
+        response = requests.request(HTTP_POST, self.base_url, headers=headers, data=self.payloads.PROJECTS_PAYLOAD)
+        return ContentfulRequest.get_response_content(response=response,
+                                                      field_name=PROJECT_COLLECTION)
 
     def get_experiences(self):
         headers = self.get_headers()
-        response = requests.request("POST", self.base_url, headers=headers, data=self.payloads.EXPERIENCES_PAYLOAD)
-        response_data = response.json()
-        response_field = response_data['data']
-        response_collection = response_field['experienceArticleCollection']
-        return response_collection['items']
+        response = requests.request(HTTP_POST, self.base_url, headers=headers, data=self.payloads.EXPERIENCES_PAYLOAD)
+        return ContentfulRequest.get_response_content(response=response,
+                                                      field_name=EXPERIENCE_COLLECTION)
 
     def get_headers(self):
         return {
-            'Content-Type': 'application/json',
-            'Authorization': f"Bearer {self.token}"
+            'Content-Type': APPLICATION_JSON,
+            'Authorization': f"{BEARER} {self.token}"
         }
+
+    @staticmethod
+    def get_response_content(response, field_name):
+        return response.json()[GRAPHQL_DATA][field_name][GRAPHQL_ITEMS]
