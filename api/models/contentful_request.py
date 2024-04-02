@@ -1,15 +1,11 @@
 import requests
 from api.models.graphql_payloads import Payload
-class ContentfulRequest:
+from api.constants.constants import (PROJECT_COLLECTION, EXPERIENCE_COLLECTION,
+                                     GRAPHQL_DATA, GRAPHQL_ITEMS, APPLICATION_JSON,
+                                     BEARER, HTTP_POST)
 
-    response_fields = {
-        ARTICLE_COLLECTION: "projectArticleCollection",
-        EXPERIENCE_COLLECTION: "experienceArticleCollection",
-        GRAPHQL: {
-            DATA: "data",
-            ITEMS: "items"
-        }
-    }
+
+class ContentfulRequest:
 
     def __init__(self, space_id, environment, token):
         self.space_id = space_id
@@ -20,21 +16,21 @@ class ContentfulRequest:
 
     def get_projects(self):
         headers = self.get_headers()
-        response = requests.request("POST", self.base_url, headers=headers, data=self.payloads.PROJECTS_PAYLOAD)
+        response = requests.request(HTTP_POST, self.base_url, headers=headers, data=self.payloads.PROJECTS_PAYLOAD)
         return self.get_response_content(response=response,
-                                         field_name=response_fields.ARTICLE_COLLECTION)
+                                         field_name=PROJECT_COLLECTION)
 
     def get_experiences(self):
         headers = self.get_headers()
-        response = requests.request("POST", self.base_url, headers=headers, data=self.payloads.EXPERIENCES_PAYLOAD)
+        response = requests.request(HTTP_POST, self.base_url, headers=headers, data=self.payloads.EXPERIENCES_PAYLOAD)
         return self.get_response_content(response=response,
-                                         field_name=response_fields.EXPERIENCE_COLLECTION)
+                                         field_name=EXPERIENCE_COLLECTION)
 
     def get_response_content(self, response, field_name):
-        return response.json()[response_fields.GRAPHQL.DATA][field_name][response_fields.GRAPHQL.ITEMS]
+        return response.json()[GRAPHQL_DATA][field_name][GRAPHQL_ITEMS]
 
     def get_headers(self):
         return {
-            'Content-Type': 'application/json',
-            'Authorization': f"Bearer {self.token}"
+            'Content-Type': APPLICATION_JSON,
+            'Authorization': f"{BEARER} {self.token}"
         }

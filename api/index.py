@@ -4,15 +4,19 @@ from datetime import datetime
 from flask import Flask, Response, request
 from api.models.Cache import Cache
 from api.models.contentful_request import ContentfulRequest
+from api.constants.constants import (APPLICATION_JSON, ENVIRONMENT, SPACE_ID,
+                                     APP_TOKEN, CACHE_DURATION, INVALIDATION_TOKEN,
+                                     ACCESS_CONTROL_ALLOW_ORIGIN, QUERY_TOKEN)
 
-environment = os.environ['ENVIRONMENT']
-space_id = os.environ['SPACE_ID']
-token = os.environ['APP_TOKEN']
-cache_duration = os.environ['CACHE_DURATION']
-invalidation_token = os.environ["INVALIDATION_TOKEN"]
+environment = os.environ[ENVIRONMENT]
+space_id = os.environ[SPACE_ID]
+token = os.environ[APP_TOKEN]
+cache_duration = os.environ[CACHE_DURATION]
+invalidation_token = os.environ[INVALIDATION_TOKEN]
 app = Flask(__name__)
 cache = Cache(cache_duration)
 contentful = ContentfulRequest(space_id, environment, token)
+
 
 @app.route('/experiences')
 def experiences():
@@ -24,7 +28,10 @@ def experiences():
         cache.experiences = response
     else:
         experience_articles = cache.experiences
-    return Response(json.dumps(experience_articles, indent=4), headers={'Access-Control-Allow-Origin': '*'}, mimetype="application/json")
+    return Response(json.dumps(experience_articles, indent=4),
+                    headers={'Access-Control-Allow-Origin': '*'},
+                    mimetype=APPLICATION_JSON)
+
 
 @app.route('/projects')
 def projects():
@@ -36,16 +43,21 @@ def projects():
         cache.projects = response
     else:
         projects_result = cache.projects
-    return Response(json.dumps(projects_result, indent=4), headers={'Access-Control-Allow-Origin': '*'}, mimetype="application/json")
+    return Response(json.dumps(projects_result, indent=4),
+                    headers=ACCESS_CONTROL_ALLOW_ORIGIN,
+                    mimetype=APPLICATION_JSON)
+
 
 @app.route("/invalidate")
 def invalidate():
     message = ""
-    user_invalidation_token = request.args.get('token')
+    user_invalidation_token = request.args.get(QUERY_TOKEN)
     if user_invalidation_token == invalidation_token:
         cache.projects = []
         cache.experiences = []
         message = "Content is successfully invalidated"
     else:
         message = "Missing token header, content isn't invalidated"
-    return Response(message, headers={'Access-Control-Allow-Origin': '*'}, mimetype="application/json")
+    return Response(message,
+                    headers=ACCESS_CONTROL_ALLOW_ORIGIN,
+                    mimetype=APPLICATION_JSON)
