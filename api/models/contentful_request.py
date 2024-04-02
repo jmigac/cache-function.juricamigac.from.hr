@@ -2,7 +2,7 @@ import requests
 from api.models.graphql_payloads import Payload
 from api.constants.constants import (PROJECT_COLLECTION, EXPERIENCE_COLLECTION,
                                      GRAPHQL_DATA, GRAPHQL_ITEMS, APPLICATION_JSON,
-                                     BEARER, HTTP_POST)
+                                     BEARER, GRAPHQL_QUERY, GRAPHQL_VARIABLES)
 
 
 class ContentfulRequest:
@@ -16,13 +16,19 @@ class ContentfulRequest:
 
     def get_projects(self):
         headers = self.get_headers()
-        response = requests.request(HTTP_POST, self.base_url, headers=headers, data=self.payloads.PROJECTS_PAYLOAD)
+        response = requests.post(self.base_url,
+                                 json={GRAPHQL_QUERY: self.payloads.PROJECTS_PAYLOAD, GRAPHQL_VARIABLES: {}},
+                                 headers=headers)
+        print(response.json())
         return ContentfulRequest.get_response_content(response=response,
                                                       field_name=PROJECT_COLLECTION)
 
     def get_experiences(self):
         headers = self.get_headers()
-        response = requests.request(HTTP_POST, self.base_url, headers=headers, data=self.payloads.EXPERIENCES_PAYLOAD)
+        response = requests.post(self.base_url,
+                                 json={GRAPHQL_QUERY: self.payloads.EXPERIENCES_PAYLOAD, GRAPHQL_VARIABLES: {}},
+                                 headers=headers)
+        print(response.json())
         return ContentfulRequest.get_response_content(response=response,
                                                       field_name=EXPERIENCE_COLLECTION)
 

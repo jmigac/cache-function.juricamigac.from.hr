@@ -2,5 +2,34 @@
 class Payload:
 
     def __init__(self):
-        self.EXPERIENCES_PAYLOAD = "{\"query\":\"{\\r\\n  experienceArticleCollection(limit: 8) {\\r\\n    items {\\r\\n      title\\r\\n      description\\r\\n      from\\r\\n      until\\r\\n    }\\r\\n  }\\r\\n}\",\"variables\":{}}"
-        self.PROJECTS_PAYLOAD = "{\"query\":\"{\\r\\n  projectArticleCollection(limit: 8) {\\r\\n    items {\\r\\n      title\\r\\n      description\\r\\n      technologies\\r\\n    }\\r\\n  }\\r\\n}\",\"variables\":{}}"
+        self.EXPERIENCES_PAYLOAD = Payload.get_experiences_payload()
+        self.PROJECTS_PAYLOAD = Payload.get_projects_payload()
+
+    @staticmethod
+    def get_projects_payload():
+        return """
+        {
+            projectArticleCollection(limit: 8) {
+                items {
+                    title
+                    description
+                    technologies
+                }
+            }
+        }
+        """
+
+    @staticmethod
+    def get_experiences_payload():
+        return """
+        {
+            experienceArticleCollection(limit: 8) {
+                items {
+                    title
+                    description
+                    from
+                    until
+                }
+            }
+        }
+        """

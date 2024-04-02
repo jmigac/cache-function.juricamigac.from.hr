@@ -29,7 +29,7 @@ def experiences():
     else:
         experience_articles = cache.experiences
     return Response(json.dumps(experience_articles, indent=4),
-                    headers={'Access-Control-Allow-Origin': '*'},
+                    headers=ACCESS_CONTROL_ALLOW_ORIGIN,
                     mimetype=APPLICATION_JSON)
 
 
