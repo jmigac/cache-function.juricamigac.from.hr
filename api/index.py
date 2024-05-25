@@ -6,7 +6,9 @@ from api.models.Cache import Cache
 from api.models.contentful_request import ContentfulRequest
 from api.constants.constants import (APPLICATION_JSON, ENVIRONMENT, SPACE_ID,
                                      APP_TOKEN, CACHE_DURATION, INVALIDATION_TOKEN,
-                                     ACCESS_CONTROL_ALLOW_ORIGIN, QUERY_TOKEN)
+                                     ACCESS_CONTROL_ALLOW_ORIGIN, QUERY_TOKEN, SUPABASE_URL,
+                                     SUPABASE_KEY)
+from supabase import create_client, Client
 
 environment = os.environ[ENVIRONMENT]
 space_id = os.environ[SPACE_ID]
@@ -16,6 +18,10 @@ invalidation_token = os.environ[INVALIDATION_TOKEN]
 app = Flask(__name__)
 cache = Cache(cache_duration)
 contentful = ContentfulRequest(space_id, environment, token)
+
+url = os.environ.get(SUPABASE_URL)
+key = os.environ.get(SUPABASE_KEY)
+Client = create_client(url, key)
 
 
 @app.route('/experiences')
@@ -59,5 +65,22 @@ def invalidate():
     else:
         message = "Missing token header, content isn't invalidated"
     return Response(message,
+                    headers=ACCESS_CONTROL_ALLOW_ORIGIN,
+                    mimetype=APPLICATION_JSON)
+
+
+@app.route("/glucose/<glucose_value>")
+def insert_glucose_value(glucose_value):
+    Client.table('glucose').insert({"value": glucose_value}).execute()
+    return Response("Glucose level successfully inserted",
+                    headers=ACCESS_CONTROL_ALLOW_ORIGIN,
+                    mimetype=APPLICATION_JSON)
+
+
+@app.route("/glucose/latest")
+def get_latest():
+    data, count = Client.table('glucose').select('value').order('date', desc=True).limit(1).single().execute()
+    data_json = json.dumps(data[1], indent=4)
+    return Response(data_json,
                     headers=ACCESS_CONTROL_ALLOW_ORIGIN,
                     mimetype=APPLICATION_JSON)
