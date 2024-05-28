@@ -14,7 +14,7 @@ environment = os.environ[ENVIRONMENT]
 space_id = os.environ[SPACE_ID]
 token = os.environ[APP_TOKEN]
 cache_duration = os.environ[CACHE_DURATION]
-invalidation_token = os.environ[INVALIDATION_TOKEN]
+invalidation_token = 323
 app = Flask(__name__)
 cache = Cache(cache_duration)
 contentful = ContentfulRequest(space_id, environment, token)
@@ -79,7 +79,7 @@ def insert_glucose_value(glucose_value):
 
 @app.route("/glucose/latest")
 def get_latest():
-    data, count = Client.table('glucose').select('value').order('date', desc=True).limit(1).single().execute()
+    data, count = Client.table('glucose').select('*').order('date', desc=True).limit(1).single().execute()
     data_json = json.dumps(data[1], indent=4)
     return Response(data_json,
                     headers=ACCESS_CONTROL_ALLOW_ORIGIN,
