@@ -1,5 +1,6 @@
 PROJECT_COLLECTION = "projectArticleCollection"
 EXPERIENCE_COLLECTION = "experienceArticleCollection"
+HOME_PAGE = "homePage"
 GRAPHQL_DATA = "data"
 GRAPHQL_ITEMS = "items"
 APPLICATION_JSON = "application/json"

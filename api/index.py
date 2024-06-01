@@ -53,6 +53,20 @@ def projects():
                     headers=ACCESS_CONTROL_ALLOW_ORIGIN,
                     mimetype=APPLICATION_JSON)
 
+@app.route('/homePage')
+def get_home_page():
+    home_page_result = ""
+    if cache.is_cache_expired() or not cache.home_page:
+        response = contentful.get_homepage()
+        home_page_result = response
+        cache.cache_time = datetime.now()
+        cache.home_page = response
+    else:
+        home_page_result = cache.home_page
+    return Response(json.dumps(home_page_result, indent=4),
+                    headers=ACCESS_CONTROL_ALLOW_ORIGIN,
+                    mimetype=APPLICATION_JSON)
+
 
 @app.route("/invalidate")
 def invalidate():
@@ -84,3 +98,6 @@ def get_latest():
     return Response(data_json,
                     headers=ACCESS_CONTROL_ALLOW_ORIGIN,
                     mimetype=APPLICATION_JSON)
+
+if __name__ == "__main__":
+    app.run()
