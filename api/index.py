@@ -6,7 +6,7 @@ from api.models.Cache import Cache
 from api.models.contentful_request import ContentfulRequest
 from api.constants.constants import (APPLICATION_JSON, ENVIRONMENT, SPACE_ID,
                                      APP_TOKEN, CACHE_DURATION, INVALIDATION_TOKEN,
-                                     ACCESS_CONTROL_ALLOW_ORIGIN, QUERY_TOKEN)
+                                     ACCESS_CONTROL_ALLOW_ORIGIN, QUERY_TOKEN, ACCESS_CONTROL_ALLOW_ORIGIN_WITH_CACHE)
 
 environment = os.environ[ENVIRONMENT]
 space_id = os.environ[SPACE_ID]
@@ -59,7 +59,7 @@ def get_home_page():
     else:
         home_page_result = cache.home_page
     return Response(json.dumps(home_page_result, indent=4),
-                    headers=ACCESS_CONTROL_ALLOW_ORIGIN,
+                    headers=ACCESS_CONTROL_ALLOW_ORIGIN_WITH_CACHE,
                     mimetype=APPLICATION_JSON)
 
 

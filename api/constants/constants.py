@@ -14,6 +14,8 @@ INVALIDATION_TOKEN = "INVALIDATION_TOKEN"
 SUPABASE_URL = "SUPABASE_URL"
 SUPABASE_KEY = "SUPABASE_KEY"
 ACCESS_CONTROL_ALLOW_ORIGIN = {'Access-Control-Allow-Origin': '*'}
+ACCESS_CONTROL_ALLOW_ORIGIN_WITH_CACHE = {'Access-Control-Allow-Origin': '*',
+                                          'Cache-Control': 's-maxage=3600, stale-while-revalidate=1800'}
 QUERY_TOKEN = "token"
 GRAPHQL_QUERY = "query"
 GRAPHQL_VARIABLES = "variables"
